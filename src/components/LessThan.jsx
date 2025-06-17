@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 
 const PracticeButton = ({ onClick, isCorrect = null, children, className = '', disabled = false }) => {
@@ -8,8 +7,8 @@ const PracticeButton = ({ onClick, isCorrect = null, children, className = '', d
       <button 
         onClick={onClick}
         disabled={disabled}
-        className={`w-full px-4 py-2 rounded-lg ${
-          isCorrect ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+        className={`w-12 h-12 aspect-square border-2 rounded-lg ${
+          isCorrect ? 'bg-[#008545] text-white border-[#008545]' : 'bg-yellow-500 text-white border-yellow-500'
         }`}
       >
         {children}
@@ -22,7 +21,7 @@ const PracticeButton = ({ onClick, isCorrect = null, children, className = '', d
       variant="outline"
       onClick={onClick}
       disabled={disabled}
-      className="w-full bg-white hover:bg-gray-400"
+      className="w-12 h-12 aspect-square border-2 border-gray-300 rounded-lg bg-white hover:bg-gray-100"
     >
       {children}
     </Button>
@@ -36,6 +35,7 @@ const LessThan = () => {
   const [feedback, setFeedback] = useState('');
   const [score, setScore] = useState(0);
   const [totalQuestions, setTotalQuestions] = useState(0);
+  const [isAnsweredCorrectly, setIsAnsweredCorrectly] = useState(false);
 
   const symbols = {
     equal: {
@@ -144,7 +144,6 @@ const LessThan = () => {
       }
     };
 
-    // 50-50 chance of getting either type of question
     const useContext = Math.random() < 0.5;
     const scenario = useContext 
       ? contextScenarios[Math.floor(Math.random() * contextScenarios.length)]
@@ -160,8 +159,6 @@ const LessThan = () => {
     setUserAnswer('');
     setFeedback('');
   };
-
-  const [isAnsweredCorrectly, setIsAnsweredCorrectly] = useState(false);
 
   const checkAnswer = (selectedSymbol) => {
     if (isAnsweredCorrectly) return;
@@ -194,190 +191,186 @@ const LessThan = () => {
   };
 
   return (
-    <div className="bg-gray-100 p-8 w-[780px] overflow-auto">
-      <Card className="w-[748px] mx-auto shadow-md bg-white">
-        <div className="bg-sky-50 p-6 rounded-t-lg w-[748px]">
-          <h1 className="text-sky-900 text-2xl font-bold">Comparison Symbols</h1>
-          <p className="text-sky-800">Learn how to compare numbers using mathematical symbols!</p>
-        </div>
+    <>
+      <style>{`
+        @property --r {
+          syntax: '<angle>';
+          inherits: false;
+          initial-value: 0deg;
+        }
 
-        <CardContent className="space-y-6 pt-6 w-[748px]">
-          <div className="bg-blue-50 p-4 rounded border border-blue-200">
-            <h2 className="text-blue-900 font-bold mb-2">What are Comparison Symbols?</h2>
-            <p className="text-blue-600">
-              Comparison symbols are mathematical symbols that show the relationship between two values, 
-              expressions, or quantities. They help us understand if numbers are equal, greater than, 
-              less than, or not equal to each other. Learn more about these symbols below and practice using them!
-            </p>
+        .glow-button { 
+          min-width: auto; 
+          height: auto; 
+          position: relative; 
+          border-radius: 8px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1;
+          transition: all .3s ease;
+          padding: 7px;
+        }
+
+        .glow-button::before {
+          content: "";
+          display: block;
+          position: absolute;
+          background: rgb(250, 245, 255);
+          inset: 2px;
+          border-radius: 4px;
+          z-index: -2;
+        }
+
+        .simple-glow {
+          background: conic-gradient(
+            from var(--r),
+            transparent 0%,
+            rgb(0, 255, 132) 2%,
+            rgb(0, 214, 111) 8%,
+            rgb(0, 174, 90) 12%,
+            rgb(0, 133, 69) 14%,
+            transparent 15%
+          );
+          animation: rotating 3s linear infinite;
+          transition: animation 0.3s ease;
+        }
+
+        .simple-glow.stopped {
+          animation: none;
+          background: none;
+        }
+
+        @keyframes rotating {
+          0% {
+            --r: 0deg;
+          }
+          100% {
+            --r: 360deg;
+          }
+        }
+      `}</style>
+      <div className="w-[500px] h-auto mx-auto shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.05)] bg-white rounded-lg overflow-hidden">
+        <div className="p-4">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-[#5750E3] text-sm font-medium select-none">Comparison Symbols Practice</h2>
+            <button
+              onClick={() => {
+                setScore(0);
+                setTotalQuestions(0);
+                generateQuestion();
+              }}
+              className="text-gray-500 hover:text-gray-700 text-sm px-3 py-1 rounded border border-gray-300 hover:border-gray-400 transition-colors"
+            >
+              Reset
+            </button>
           </div>
-
-          <div className="space-y-4">
-            <div className="grid grid-cols-3 gap-4">
-              <Button
-                onClick={() => setSelectedSymbol('less')}
-                className={`w-full px-4 py-2 rounded-lg ${
-                  selectedSymbol === 'less'
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 hover:bg-gray-300'
-                }`}
-              >
-                Less Than
-              </Button>
-              <Button
-                onClick={() => setSelectedSymbol('equal')}
-                className={`w-full px-4 py-2 rounded-lg ${
-                  selectedSymbol === 'equal'
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 hover:bg-gray-300'
-                }`}
-              >
-                Equal To
-              </Button>
-              <Button
-                onClick={() => setSelectedSymbol('greater')}
-                className={`w-full px-4 py-2 rounded-lg ${
-                  selectedSymbol === 'greater'
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 hover:bg-gray-300'
-                }`}
-              >
-                Greater Than
-              </Button>
-            </div>
-            <div className="grid grid-cols-2 gap-4 w-2/3 mx-auto">
-              <Button
-                onClick={() => setSelectedSymbol('lessEqual')}
-                className={`w-full px-4 py-2 rounded-lg ${
-                  selectedSymbol === 'lessEqual'
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 hover:bg-gray-300'
-                }`}
-              >
-                Less Than or Equal To
-              </Button>
-              <Button
-                onClick={() => setSelectedSymbol('greaterEqual')}
-                className={`w-full px-4 py-2 rounded-lg ${
-                  selectedSymbol === 'greaterEqual'
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 hover:bg-gray-300'
-                }`}
-              >
-                Greater Than or Equal To
-              </Button>
-            </div>
-          </div>
-
-          <Card className="border border-gray-200">
-            <CardContent className="space-y-4 p-6">
-              <div className="flex items-center gap-4">
-                <span className="text-4xl font-mono">
-                  {symbols[selectedSymbol].symbol}
-                </span>
-                <span className="text-xl font-bold">{symbols[selectedSymbol].name}</span>
-              </div>
-              <p className="text-gray-700">{symbols[selectedSymbol].description}</p>
-              <div>
-                <h3 className="font-semibold mb-2">Examples:</h3>
-                <ul className="list-disc list-inside space-y-1">
-                  {symbols[selectedSymbol].examples.map((example, index) => (
-                    <li key={index} className="text-gray-700">{example}</li>
-                  ))}
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
 
           <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-            <h2 className="text-purple-900 font-bold mb-4">Practice Time!</h2>
-            <div className="space-y-4">
-              <p className="text-lg font-semibold text-center text-purple-800">
-                What symbol goes between these numbers?
-              </p>
-              <div className="text-xl text-center space-y-2 py-6">
+            <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
+              <div className="text-xl text-center space-y-2 pb-6">
                 <div className="font-semibold text-purple-900">{practiceQuestion?.text}</div>
-                <div className="text-2xl space-x-4">
+                <div className="text-2xl space-x-4 flex items-center justify-center">
                   <span>{practiceQuestion?.num1}</span>
                   <span className="px-4">?</span>
                   <span>{practiceQuestion?.num2}</span>
-                  <span className="text-lg text-gray-600">{practiceQuestion?.context}</span>
+                  {practiceQuestion?.context && (
+                    <span className="text-lg text-black ml-4">{practiceQuestion?.context}</span>
+                  )}
                 </div>
               </div>
+
               <div className="space-y-4">
-                <div className="grid grid-cols-3 gap-4">
+                <div className="flex justify-center gap-2">
                   <PracticeButton
                     onClick={() => checkAnswer(symbols.less.symbol)}
                     isCorrect={userAnswer === symbols.less.symbol ? getSymbolState(symbols.less.symbol) : null}
                     disabled={isAnsweredCorrectly}
+                    className="w-12 h-12 aspect-square border-2 border-gray-300 rounded-lg"
                   >
                     <span className={userAnswer === symbols.less.symbol ? 'text-white' : 'text-black'}>
                       {symbols.less.symbol}
                     </span>
                   </PracticeButton>
                   <PracticeButton
-                    onClick={() => checkAnswer(symbols.equal.symbol)}
-                    isCorrect={userAnswer === symbols.equal.symbol ? getSymbolState(symbols.equal.symbol) : null}
-                    disabled={isAnsweredCorrectly}
-                  >
-                    <span className={userAnswer === symbols.equal.symbol ? 'text-white' : 'text-black'}>
-                      {symbols.equal.symbol}
-                    </span>
-                  </PracticeButton>
-                  <PracticeButton
-                    onClick={() => checkAnswer(symbols.greater.symbol)}
-                    isCorrect={userAnswer === symbols.greater.symbol ? getSymbolState(symbols.greater.symbol) : null}
-                    disabled={isAnsweredCorrectly}
-                  >
-                    <span className={userAnswer === symbols.greater.symbol ? 'text-white' : 'text-black'}>
-                      {symbols.greater.symbol}
-                    </span>
-                  </PracticeButton>
-                </div>
-                <div className="grid grid-cols-2 gap-4 w-2/3 mx-auto">
-                  <PracticeButton
                     onClick={() => checkAnswer(symbols.lessEqual.symbol)}
                     isCorrect={userAnswer === symbols.lessEqual.symbol ? getSymbolState(symbols.lessEqual.symbol) : null}
                     disabled={isAnsweredCorrectly}
+                    className="w-12 h-12 aspect-square border-2 border-gray-300 rounded-lg"
                   >
                     <span className={userAnswer === symbols.lessEqual.symbol ? 'text-white' : 'text-black'}>
                       {symbols.lessEqual.symbol}
                     </span>
                   </PracticeButton>
                   <PracticeButton
+                    onClick={() => checkAnswer(symbols.equal.symbol)}
+                    isCorrect={userAnswer === symbols.equal.symbol ? getSymbolState(symbols.equal.symbol) : null}
+                    disabled={isAnsweredCorrectly}
+                    className="w-12 h-12 aspect-square border-2 border-gray-300 rounded-lg"
+                  >
+                    <span className={userAnswer === symbols.equal.symbol ? 'text-white' : 'text-black'}>
+                      {symbols.equal.symbol}
+                    </span>
+                  </PracticeButton>
+                  <PracticeButton
                     onClick={() => checkAnswer(symbols.greaterEqual.symbol)}
                     isCorrect={userAnswer === symbols.greaterEqual.symbol ? getSymbolState(symbols.greaterEqual.symbol) : null}
                     disabled={isAnsweredCorrectly}
+                    className="w-12 h-12 aspect-square border-2 border-gray-300 rounded-lg"
                   >
                     <span className={userAnswer === symbols.greaterEqual.symbol ? 'text-white' : 'text-black'}>
                       {symbols.greaterEqual.symbol}
                     </span>
                   </PracticeButton>
+                  <PracticeButton
+                    onClick={() => checkAnswer(symbols.greater.symbol)}
+                    isCorrect={userAnswer === symbols.greater.symbol ? getSymbolState(symbols.greater.symbol) : null}
+                    disabled={isAnsweredCorrectly}
+                    className="w-12 h-12 aspect-square border-2 border-gray-300 rounded-lg"
+                  >
+                    <span className={userAnswer === symbols.greater.symbol ? 'text-white' : 'text-black'}>
+                      {symbols.greater.symbol}
+                    </span>
+                  </PracticeButton>
                 </div>
+                <p className="font-medium text-sm text-center text-purple-700">What symbol goes between these numbers?</p>
               </div>
-              {feedback && (
-                <p className={`text-center font-semibold ${
-                  feedback.includes('Correct') ? 'text-green-600' : 'text-red-600'
+            </div>
+
+            {feedback && (
+              <div className={`p-4 rounded-lg mb-4 ${
+                feedback.includes('Correct') 
+                  ? 'bg-[#008545]/10 border border-[#008545]' 
+                  : 'bg-yellow-50 border border-yellow-200'
+              }`}>
+                <p className={`font-medium text-sm ${
+                  feedback.includes('Correct') ? 'text-[#008545]' : 'text-yellow-600'
                 }`}>
                   {feedback}
                 </p>
-              )}
-              <p className="text-center text-purple-700">
+              </div>
+            )}
+
+            <div className="flex justify-between items-center relative">
+              <div className="w-[100px]"></div>
+              <p className="text-purple-700 text-sm absolute left-1/2 -translate-x-1/2">
                 Score: {score}/{totalQuestions}
               </p>
               <Button
-                onClick={generateQuestion}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                onClick={() => {
+                  setTotalQuestions(prev => prev + 1);
+                  generateQuestion();
+                }}
+                className="bg-gray-500 hover:bg-gray-600 text-white text-sm px-4 py-2 rounded"
               >
-                New Question
+                Skip
               </Button>
             </div>
           </div>
-        </CardContent>
-      </Card>
-      <p className="text-center text-gray-600 mt-4">
-        Understanding comparison symbols is essential for mathematics and problem solving!
-      </p>
-    </div>
+        </div>
+      </div>
+    </>
   );
 };
 
