@@ -1,40 +1,36 @@
 # Less Than
 
-The **Less Than** interactive helps students understand and practice comparing numbers using the "less than" symbol (<).
+React SPA for practicing number comparison and the less-than relation.
 
----
+**Live:** [https://content-interactives.github.io/less_than](https://content-interactives.github.io/less_than)
 
-## 🔗 Live Interactive
+Curriculum alignment: [Standards.md](Standards.md).
 
-Try it out here:  
-👉 [https://content-interactives.github.io/less_than](https://content-interactives.github.io/less_than)
+## Stack
 
----
+- React 19, Vite
+- Tailwind CSS, PostCSS
+- GitHub Pages (`gh-pages`)
 
-## 🌐 Where This Interactive Is Being Used
+## Setup
 
-This interactive is currently featured in the following locations:
+```bash
+npm install
+npm run dev
+```
 
-- <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/5d12571f-8e12-4441-98ab-c0bc94069a96" /> **CK-12 Intent Response**  
-  - 👉 PRODUCTION: PENDING  
-  - 👉 MASTER: PENDING  
-- 📘 **CK-12 Flexbooks**
-  - 👉 PENDING
+## Scripts
 
----
+| Command | Description |
+|--------|-------------|
+| `npm run dev` | Dev server |
+| `npm run build` | Production build |
+| `npm run preview` | Preview `dist/` |
+| `npm run lint` | ESLint |
+| `npm run deploy` | Build + `gh-pages` |
 
-## 📚 Standards & Subjects
+## Configuration
 
-This interactive aligns with the following topics and standards:
+`vite.config.js`: `base: '/less_than/'` for GitHub Pages.
 
-- **📂 Subject Area**: Middle School Math (Grade 6)  
-- **🔢 Topic**: Comparing Numbers (Inequalities)  
-- **📏 Common Core**:  
-  - 6.NS.C.7 – Understand ordering and absolute value of rational numbers.
-
----
-
-## 🛠️ Developer Notes
-
-- Built with: React, HTML, CSS, JavaScript  
-- Deployed via GitHub Pages
+Implementation: `src/`.
